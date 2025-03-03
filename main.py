@@ -1,17 +1,28 @@
 import telebot
 from dotenv import load_dotenv
 import os
-import random
+from ollama import chat
+from ollama import ChatResponse
+# Загружаем переменные окружения
 load_dotenv()
-states = {}  # словарь для хранения состояний пользователей
+
+# Инициализируем бота
 bot = telebot.TeleBot(os.getenv('TOKEN'))
-START = range(1)  # возможные состояния пользователя
+# Обработчик команды /start
 @bot.message_handler(commands=['start'])
 def hello_message(message):
-    secret = 0
-    states[secret] = START
-    secret = random.randint(1,49494985894939494944)
-    states[secret] = START
-    id1 = message.from_user.id
-    bot.send_message(message.chat.id, f'Ваш id {id1}')
+    bot.send_message(message.chat.id, 'Hello, I am a simple chatbot. Send me a message to start.')
+
+# Обработчик текстовых сообщений
+@bot.message_handler(content_types=['text'])
+def answer_messages(message):
+    response: ChatResponse = chat(model='phi4:latest', messages=[
+    {
+        'role': 'user',
+        'content': message.text,
+    },
+    ])
+    bot.send_message(message.chat.id, response['message']['content'])
+
+# Запускаем бота
 bot.infinity_polling()
