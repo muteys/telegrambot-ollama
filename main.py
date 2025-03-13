@@ -111,7 +111,7 @@ def handle_callback(call):
     chat_id = call.message.chat.id
     action, additional_info = call.data.split('|')
     if action == 'Teacher':
-        bot.send_message(chat_id, "Введите текс, по которому будут проверятся ученики")
+        bot.send_message(chat_id, "Введите текс, на основе которого будут генерироваться вопросы")
         user_data[chat_id] = 'waiting_for_input_1'
     elif action == 'Student':
         bot.send_message(chat_id, "Введите id полученое от учителя")
